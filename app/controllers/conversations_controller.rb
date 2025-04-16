@@ -12,7 +12,7 @@ class ConversationsController < ApplicationController
   end
 
   def destroy
-    conversation = Conversation.find_by(id: params[:id])
+    conversation = Conversation.find_by(id: params[:id].strip)
 
     if conversation
       conversation.destroy
@@ -23,7 +23,7 @@ class ConversationsController < ApplicationController
   end
 
   def show
-    conversation = Conversation.find_by(id: params[:id])
+    conversation = Conversation.find_by(id: params[:id].strip)
 
     if conversation
       render json: { conversation: conversation }, status: :ok
@@ -32,12 +32,25 @@ class ConversationsController < ApplicationController
     end
   end
 
+  def by_user
+    user_id = params[:id].strip
+
+    conversations = Conversation.where("user_a_id = ? OR user_b_id = ?", user_id, user_id)
+
+    if conversations.any?
+      render json: { conversations: conversations }, status: :ok
+    else
+      render json: { message: 'No conversations found for this user' }, status: :not_found
+    end
+  end
+
+
   private
 
   # Params function
   def conversation_params
-    user_a_id = params.require(:user_a_id)
-    user_b_id = params.require(:user_b_id)
+    user_a_id = params.require(:user_a_id).strip
+    user_b_id = params.require(:user_b_id).strip
 
     { user_a_id: user_a_id, user_b_id: user_b_id }
   end
