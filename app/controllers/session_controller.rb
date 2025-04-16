@@ -1,11 +1,13 @@
 class SessionController < ApplicationController
     skip_before_action :verify_authenticity_token
 
+    before_action :authenticate_user, only: [:logout]
+
     JWT_SECRET = ENV['JWT_SECRET'] || 'secret'
     JWT_EXPIRATION_HOURS = ENV['JWT_EXPIRATION_HOURS'] || 12
 
     def login
-      user_id = params[:id].to_s.strip
+      user_id = params[:user_id].to_s.strip
       user = User.find_by(id: user_id)
 
       if user

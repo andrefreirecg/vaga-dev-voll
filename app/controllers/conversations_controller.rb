@@ -1,5 +1,6 @@
 class ConversationsController < ApplicationController
   skip_before_action :verify_authenticity_token
+  before_action :authenticate_user, only: [:create, :destroy, :show, :by_user]
 
   def create
     conversation = Conversation.new(conversation_params)

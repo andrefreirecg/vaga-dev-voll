@@ -1,4 +1,21 @@
 class ApplicationController < ActionController::Base
-  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
+  JWT_SECRET = ENV['JWT_SECRET'] || 'secret'
+
+  def authenticate_user
+    token = cookies.signed[:jwt]
+
+    if token
+      begin
+        decoded_token = JWT.decode(token, JWT_SECRET, true, { algorithm: 'HS256' })
+        user_id = decoded_token[0]["user_id"]
+        @current_user = User.find_by(id: user_id)
+        render json: { error: 'User not found' }, status: :unauthorized unless @current_user
+      rescue JWT::DecodeError
+        render json: { error: 'Invalid token', log: token }, status: :unauthorized
+      end
+    else
+      render json: { error: 'Authentication is required.' }, status: :unauthorized
+    end
+  end
 end
