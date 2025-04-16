@@ -22,8 +22,19 @@ class ConversationsController < ApplicationController
     end
   end
 
+  def show
+    conversation = Conversation.find_by(id: params[:id])
+
+    if conversation
+      render json: { conversation: conversation }, status: :ok
+    else
+      render json: { error: 'Conversation not found' }, status: :not_found
+    end
+  end
+
   private
 
+  # Params function
   def conversation_params
     user_a_id = params.require(:user_a_id)
     user_b_id = params.require(:user_b_id)
