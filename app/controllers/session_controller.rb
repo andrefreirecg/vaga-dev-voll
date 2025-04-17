@@ -24,7 +24,7 @@ class SessionController < ApplicationController
             httponly: true,
             secure: Rails.env.production?
           }
-        render json: { message: 'Login realizado', token: token, user: user }, status: :ok
+        render json: { message: `Login realizado - Bem vindo(a) #{user.name}`, token: token, user: user }, status: :ok
       else
         render json: { error: 'Usuário não encontrado' }, status: :not_found
       end
