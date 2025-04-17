@@ -10,12 +10,18 @@ class ApplicationController < ActionController::Base
         decoded_token = JWT.decode(token, JWT_SECRET, true, { algorithm: 'HS256' })
         user_id = decoded_token[0]["user_id"]
         @current_user = User.find_by(id: user_id)
-        render json: { error: 'User not found' }, status: :unauthorized unless @current_user
+        if @current_user.nil?
+          render json: { error: 'User not found' }, status: :unauthorized
+          return
+        end
       rescue JWT::DecodeError
         render json: { error: 'Invalid token', log: token }, status: :unauthorized
+        return
       end
     else
       render json: { error: 'Authentication is required.' }, status: :unauthorized
+      return
     end
   end
+
 end

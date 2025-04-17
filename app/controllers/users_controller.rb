@@ -5,7 +5,7 @@ class UsersController < ApplicationController
     user = User.new(user_params)
 
     if user.save
-      render json: { message: 'User created successfully', user: user }, status: :created
+      render json: { message: 'Usuário criado com sucesso', user: user }, status: :created
     else
       render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
     end
@@ -16,9 +16,9 @@ class UsersController < ApplicationController
 
     if user
       user.destroy
-      render json: { message: 'User deleted successfully' }, status: :ok
+      render json: { message: 'Usuário deletado com sucesso.' }, status: :ok
     else
-      render json: { errors: 'User not found. Try another ID' }, status: :not_found
+      render json: { errors: 'Usuário não encontrado' }, status: :not_found
     end
   end
 

@@ -6,7 +6,7 @@ class ConversationsController < ApplicationController
     conversation = Conversation.new(conversation_params)
 
     if conversation.save
-      render json: { message: 'Conversation created successfully', conversation: conversation }, status: :created
+      render json: { message: 'Conversa criada com sucesso', conversation: conversation }, status: :created
     else
       render json: { errors: conversation.errors.full_messages }, status: :unprocessable_entity
     end
@@ -17,9 +17,9 @@ class ConversationsController < ApplicationController
 
     if conversation
       conversation.destroy
-      render json: { message: 'Conversation deleted successfully' }, status: :ok
+      render json: { message: 'Conversa deletada com sucesso' }, status: :ok
     else
-      render json: { errors: 'Conversation not found. Try another ID' }, status: :not_found
+      render json: { errors: 'Conversa não encontrada' }, status: :not_found
     end
   end
 
@@ -29,7 +29,7 @@ class ConversationsController < ApplicationController
     if conversation
       render json: { conversation: conversation }, status: :ok
     else
-      render json: { error: 'Conversation not found' }, status: :not_found
+      render json: { error: 'Conversa não encontrada' }, status: :not_found
     end
   end
 
@@ -41,7 +41,7 @@ class ConversationsController < ApplicationController
     if conversations.any?
       render json: { conversations: conversations }, status: :ok
     else
-      render json: { message: 'No conversations found for this user' }, status: :not_found
+      render json: { message: 'Nenhuma conversa encontrada para esse usuário' }, status: :not_found
     end
   end
 

@@ -4,11 +4,17 @@ class SessionController < ApplicationController
     before_action :authenticate_user, only: [:logout]
 
     JWT_SECRET = ENV['JWT_SECRET'] || 'secret'
-    JWT_EXPIRATION_HOURS = ENV['JWT_EXPIRATION_HOURS'] || 12
+    JWT_EXPIRATION_HOURS = (ENV['JWT_EXPIRATION_HOURS'] || 12).to_i
 
     def login
       user_id = params[:user_id].to_s.strip
-      user = User.find_by(id: user_id)
+      name = params[:name].to_s.strip
+
+      user = if user_id.present?
+              User.find_by(id: user_id)
+            elsif name.present?
+              User.find_by(name: name)
+            end
 
       if user
         token = generate_token(user.id)
@@ -18,15 +24,15 @@ class SessionController < ApplicationController
             httponly: true,
             secure: Rails.env.production?
           }
-        render json: { message: 'Login successful', token: token, user: user }, status: :ok
+        render json: { message: 'Login realizado', token: token, user: user }, status: :ok
       else
-        render json: { error: 'User not found' }, status: :not_found
+        render json: { error: 'Usuário não encontrado' }, status: :not_found
       end
     end
 
     def logout
       cookies.delete(:jwt)
-      render json: { message: 'Logout successful' }, status: :ok
+      render json: { message: 'Você fez logout' }, status: :ok
     end
 
     private
