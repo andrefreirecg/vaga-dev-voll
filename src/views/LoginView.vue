@@ -2,7 +2,7 @@
 
 import { ref } from 'vue';
 import backgroundGif from '@/assets/images/background-login.gif'
-import CardLogin from '@/components/CardLogin.vue';
+import CardLogin from '@/components/layout/CardLogin.vue';
 const user_id = ref('');
 
 </script>

@@ -23,8 +23,8 @@
 
 <script setup>
 import { ref } from 'vue';
-import DefaultLogo from './DefaultLogo.vue';
-import ModalCreateAccount from './ModalCreateAccount.vue';
+import DefaultLogo from '../common/DefaultLogo.vue';
+import ModalCreateAccount from '../features/user/ModalCreateAccount.vue';
 import { useRouter } from 'vue-router'
 
 const router = useRouter()

@@ -31,7 +31,7 @@
 <script setup>
 
 import { ref } from 'vue'
-import IconsClose from './icons/Close.vue';
+import IconsClose from '../../icons/IconsClose.vue';
 import { toast } from 'vue3-toastify';
 
 const open = ref(false)
