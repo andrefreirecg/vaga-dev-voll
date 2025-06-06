@@ -1,9 +1,7 @@
-import Cookies from 'js-cookie'
+const url = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:3000/';
 
-export function requireAuth(to, from, next) {
-  const jwt = Cookies.get('jwt');
-  const isLoggedIn = !!jwt;
-
+export async function requireAuth(to, from, next) {
+  const isLoggedIn = await checkAuth();
   if (!isLoggedIn) {
     next('/login');
   } else {
@@ -11,11 +9,23 @@ export function requireAuth(to, from, next) {
   }
 }
 
-export function guestOnly(to, from, next) {
-  const isLoggedIn = Cookies.get('jwt');
+
+export async function guestOnly(to, from, next) {
+  const isLoggedIn = await checkAuth();
   if (isLoggedIn) {
     next('/');
   } else {
     next();
+  }
+}
+
+async function checkAuth() {
+  try{
+    const response = await fetch(`${url}me`, { credentials: 'include' });
+    const data = await response.json();
+    return data.id;
+  }catch (error) {
+    console.error('Erro ao verificar autenticacao: ', error)
+    return false
   }
 }

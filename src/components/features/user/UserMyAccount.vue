@@ -9,7 +9,5 @@
 <script setup>
 
 import IconsMyAccount from '../../icons/IconsMyAccount.vue';
-import { useRouter } from 'vue-router'
-const router = useRouter();
 
 </script>

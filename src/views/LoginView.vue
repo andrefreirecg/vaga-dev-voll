@@ -1,9 +1,25 @@
 <script setup lang="ts">
 
-import { ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import backgroundGif from '@/assets/images/background-login.gif'
 import CardLogin from '@/components/layout/CardLogin.vue';
-const user_id = ref('');
+import { userStore } from '@/stores/user';
+import { useRouter } from 'vue-router'
+const store = userStore();
+const router = useRouter()
+
+watch(() => store.id, (newId) => {
+  if (newId) {
+    router.push('/');
+  }
+});
+
+onMounted(() => {
+  console.log(store.id)
+  if (store.id) {
+    router.push('/');
+  }
+})
 
 </script>
 

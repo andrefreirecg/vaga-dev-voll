@@ -19,7 +19,6 @@ const router = createRouter({
       path: '/login',
       name: 'Login',
       component: LoginView,
-      beforeEnter: guestOnly
     },
     {
       path: '/my-account',

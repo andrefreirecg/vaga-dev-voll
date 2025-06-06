@@ -23,17 +23,17 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router'
+import { userStore } from '../../stores/user';
 import DefaultLogo from '../common/DefaultLogo.vue';
 import ModalCreateAccount from '../features/user/ModalCreateAccount.vue';
-import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
 import { toast } from 'vue3-toastify';
 
 const user_id = ref('');
-const url = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:3000/';
-
+const emit = defineEmits(['login']);
 function isUUID(str) {
   return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(str);
 }
@@ -69,47 +69,18 @@ async function login_user(e) {
       closeButton: true
     }
   )
-
-  try {
-    const response = await fetch(`${url}login`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    });
-    if (response.ok) {
-      toast.update(login_toast, {
-        render: "Você está logado",
-        autoClose: true,
-        closeOnClick: true,
-        closeButton: true,
-        type: 'success',
-        isLoading: false,
-      });
-      router.push('/');
-    }
-    const data = await response.json();
-    toast.update(login_toast, {
-      render: data.error,
-      autoClose: true,
-      closeOnClick: true,
-      closeButton: true,
-      type: 'error',
-      isLoading: false,
-    });
-    user_id.value = '';
-  } catch (error) {
-    console.error(error);
-    toast.update(login_toast, {
-      render: "Erro ao enviar solicitação, não foi possível se comunicar com o servidor",
-      autoClose: true,
-      closeOnClick: true,
-      closeButton: true,
-      type: 'error',
-      isLoading: false,
-    });
+  const logged = await userStore().login(body);
+  toast.update(login_toast, {
+    render: logged.message,
+    autoClose: true,
+    closeOnClick: true,
+    closeButton: true,
+    type: logged.status ? 'success' : 'error',
+    isLoading: false,
+  });
+  if (logged.status) {
+    console.log(logged.status)
+    router.push('/');
   }
 }
 </script>
