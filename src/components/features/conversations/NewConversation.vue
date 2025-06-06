@@ -1,22 +1,3 @@
-<!-- <template>
-  <div>
-    <div class="flex items-center justify-between p-1 cursor-pointer hover:text-black hover:bg-gray-100">
-      <div class="flex items-center p-1 gap-2">
-        <div class="lg:w-8 lg:h-8 bg-gray-500 rounded-full flex justify-center items-center">
-          +
-        </div>
-        <div class="ml-2">
-          <p class="text-sm font-bold">Nova Conversa</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
-<script setup>
-
-</script> -->
-
 <template>
   <div class="flex items-center justify-between p-1 cursor-pointer hover:text-black hover:bg-gray-100"
     @click="open = true">
@@ -67,7 +48,6 @@ const name = ref('');
 import Plus from 'vue-material-design-icons/Plus.vue';
 import AlphaX from 'vue-material-design-icons/AlphaX.vue';
 
-const user = userStore();
 const messages = messagesStore();
 
 async function new_conversation(e) {

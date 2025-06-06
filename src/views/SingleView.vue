@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import PrincipalHeader from '@/components/layout/PrincipalHeader.vue';
 import ContextConversations from '@/components/features/conversations/ContextConversations.vue';
+import RenderMessages from '@/components/features/messages/RenderMessages.vue';
 </script>
 
 <template>
@@ -14,7 +15,7 @@ import ContextConversations from '@/components/features/conversations/ContextCon
           <ContextConversations />
         </div>
         <div class="col-span-4 overflow-y-auto">
-          Content conversas
+          <RenderMessages />
         </div>
       </div>
     </main>
