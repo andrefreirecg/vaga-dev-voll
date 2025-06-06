@@ -1,11 +1,16 @@
 Rails.application.routes.draw do
-  # Users
-  resources :users, only: [:create, :destroy]
-
   # Auth
   post '/login', to: 'session#login'
   get '/me', to: 'session#me'
   post '/logout', to: 'session#logout'
+
+  # Users
+  resources :users, only: [:create, :destroy, :show] do
+    collection do
+      get 'all', to: 'users#get_all'
+    end
+  end
+
 
   # Conversations
   resources :conversations, only: [:create, :destroy, :show] do

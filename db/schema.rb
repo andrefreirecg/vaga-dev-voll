@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_16_145138) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_06_162707) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -20,6 +20,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_16_145138) do
     t.integer "messages_count", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "user_a_deleted"
+    t.boolean "user_b_deleted"
     t.index ["user_a_id", "user_b_id"], name: "index_conversations_on_user_a_id_and_user_b_id", unique: true
     t.index ["user_a_id"], name: "index_conversations_on_user_a_id"
     t.index ["user_b_id"], name: "index_conversations_on_user_b_id"

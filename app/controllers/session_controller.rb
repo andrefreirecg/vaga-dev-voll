@@ -17,7 +17,6 @@ class SessionController < ApplicationController
 
       if user
         token = generate_token(user.id)
-        Rails.logger.debug "JWT Expiration: #{JWT_EXPIRATION_HOURS.hours.from_now}"
         cookies.signed[:auth] = {
             value: token,
             expires: JWT_EXPIRATION_HOURS.hours.from_now,

@@ -22,6 +22,11 @@ class UsersController < ApplicationController
     end
   end
 
+  def get_all
+    users = User.all
+    render json: { users: users }, status: :ok
+  end
+
   private
 
   def user_params
