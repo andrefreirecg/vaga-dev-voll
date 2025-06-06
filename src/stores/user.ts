@@ -38,7 +38,7 @@ export const userStore = defineStore('user', {
         const data = await response.json()
         if (response.ok) {
           this.setUser(data.user);
-            await new Promise(resolve => setTimeout(resolve, 200));
+          await new Promise(resolve => setTimeout(resolve, 200));
           return {
             status: true,
             message: 'Login realizado com sucesso'
@@ -61,12 +61,20 @@ export const userStore = defineStore('user', {
       try {
         await fetch(`${url}logout`, {
           method: 'POST',
+          credentials: 'include',
+
         });
         this.deleteUser();
-        return true
+        return {
+          status: true,
+          message: 'Logout realizado com sucesso'
+        }
       } catch (error) {
         console.error('Erro ao fazer logout: ', error)
-        return false
+        return {
+          status: false,
+          message: 'Erro ao fazer logout'
+        }
       }
     },
   },

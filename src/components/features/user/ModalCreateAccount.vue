@@ -16,7 +16,7 @@
             v-model="name">
         </div>
         <div class="flex gap-3 pt-2 justify-end">
-          <button type="button" class="px-4 py-2 bg-gray-300 text-gray-800 rounded mr-2">
+          <button type="button" class="px-4 py-2 bg-gray-300 text-gray-800 rounded mr-2" @click="open = false">
             Cancelar
           </button>
           <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">

@@ -79,7 +79,6 @@ async function login_user(e) {
     isLoading: false,
   });
   if (logged.status) {
-    console.log(logged.status)
     router.push('/');
   }
 }

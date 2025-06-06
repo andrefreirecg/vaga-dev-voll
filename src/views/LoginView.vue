@@ -15,7 +15,6 @@ watch(() => store.id, (newId) => {
 });
 
 onMounted(() => {
-  console.log(store.id)
   if (store.id) {
     router.push('/');
   }

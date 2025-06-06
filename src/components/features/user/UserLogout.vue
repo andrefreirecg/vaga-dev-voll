@@ -9,11 +9,13 @@
 <script setup>
 
 import IconsLogout from '../../icons/IconsLogout.vue';
+import { userStore } from '@/stores/user';
+import { messagesStore } from '@/stores/messages';
 import { toast } from 'vue3-toastify';
 const url = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:3000/';
 import { useRouter } from 'vue-router'
 const router = useRouter();
-
+const messages_store = messagesStore();
 async function user_logout(e) {
   e.preventDefault();
   const logout_toast = toast("Enviando solicitação",
@@ -26,45 +28,18 @@ async function user_logout(e) {
       closeButton: true
     }
   )
-
-  try {
-    const response = await fetch(`${url}logout`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    });
-    if (response.ok) {
-      toast.update(logout_toast, {
-        render: "Voce foi desconectado com sucesso",
-        autoClose: true,
-        closeOnClick: true,
-        closeButton: true,
-        type: 'success',
-        isLoading: false,
-      });
-      router.push('/login');
-    }
-    const data = await response.json();
+  const logout = await userStore().logout();
+  if (logout.status) {
     toast.update(logout_toast, {
-      render: data.error,
+      render: logout.message,
       autoClose: true,
       closeOnClick: true,
       closeButton: true,
-      type: 'error',
+      type: logout.status ? 'success' : 'error',
       isLoading: false,
     });
-  } catch (error) {
-    console.error(error);
-    toast.update(logout_toast, {
-      render: "Erro ao enviar solicitação, não foi possível se comunicar com o servidor",
-      autoClose: true,
-      closeOnClick: true,
-      closeButton: true,
-      type: 'error',
-      isLoading: false,
-    });
+    messages_store.clear_all()
+    router.push('/login');
   }
 }
 </script>
