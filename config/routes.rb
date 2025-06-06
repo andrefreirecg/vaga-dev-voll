@@ -4,6 +4,7 @@ Rails.application.routes.draw do
 
   # Auth
   post '/login', to: 'session#login'
+  get '/me', to: 'session#me'
   post '/logout', to: 'session#logout'
 
   # Conversations

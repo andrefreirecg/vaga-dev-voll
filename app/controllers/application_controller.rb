@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   JWT_SECRET = ENV['JWT_SECRET'] || 'secret'
 
   def authenticate_user
-    token = cookies.signed[:jwt]
+    token = cookies.signed[:auth]
 
     if token
       begin
