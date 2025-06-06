@@ -1,18 +1,17 @@
 <template>
   <div class="text-white">
     <button type="button" @click="user_logout">
-      <IconsLogout fill="#fff" />
+      <Logout fill="#fff" />
     </button>
   </div>
 </template>
 
 <script setup>
+import Logout from 'vue-material-design-icons/Logout.vue';
 
-import IconsLogout from '../../icons/IconsLogout.vue';
 import { userStore } from '@/stores/user';
 import { messagesStore } from '@/stores/messages';
 import { toast } from 'vue3-toastify';
-const url = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:3000/';
 import { useRouter } from 'vue-router'
 const router = useRouter();
 const messages_store = messagesStore();

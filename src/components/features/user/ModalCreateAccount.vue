@@ -6,7 +6,7 @@
   <div v-if="open" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
       <button @click="open = false" type="button" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
-        <IconsClose />
+        <AlphaX />
       </button>
       <h2 class="text-xl text-gray-900 font-bold mb-4">Criar Conta</h2>
       <form @submit="create_account" class="pb-3">
@@ -31,8 +31,8 @@
 <script setup>
 
 import { ref } from 'vue'
-import IconsClose from '../../icons/IconsClose.vue';
 import { toast } from 'vue3-toastify';
+import AlphaX from 'vue-material-design-icons/AlphaX.vue';
 
 const open = ref(false)
 const name = ref('');
