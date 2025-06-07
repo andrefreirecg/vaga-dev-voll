@@ -24,6 +24,10 @@ Rails.application.routes.draw do
   get 'messages/conversation/:conversation_id', to: 'messages#get_messages_paginated'
   delete '/messages/:id', to: 'messages#delete'
 
+  get '/metrics', to: 'metrics#get_metrics'
+
+  root to: proc { [404, {}, ['Nada de novo por aqui...']] }
+
   match '*unmatched', to: 'application#route_not_found', via: :all
 
 end

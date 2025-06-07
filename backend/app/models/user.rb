@@ -5,8 +5,8 @@ class User < ApplicationRecord
 
     has_many :messages, dependent: :destroy
 
-    has_many :conversations_as_user_a, class_name: 'Conversation', foreign_key: 'user_a_id'
-    has_many :conversations_as_user_b, class_name: 'Conversation', foreign_key: 'user_b_id'
+    has_many :conversations_as_user_a, class_name: 'Conversation', foreign_key: 'user_a_id', dependent: :destroy
+    has_many :conversations_as_user_b, class_name: 'Conversation', foreign_key: 'user_b_id', dependent: :destroy
     private
 
     def set_default_name

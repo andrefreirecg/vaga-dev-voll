@@ -22,6 +22,17 @@ class UsersController < ApplicationController
     end
   end
 
+
+  def show
+    user = User.find_by(id: params[:id])
+
+    if user
+      render json: { user: user }, status: :ok
+    else
+      render json: { errors: 'Usuário nao encontrado' }, status: :not_found
+    end
+  end
+
   def get_all
     users = User.all
     render json: { users: users }, status: :ok
