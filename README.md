@@ -151,10 +151,17 @@ Você pode criar uma nova conta com poucos cliques na interface ou via API.
 
 ----------
 
+
+### Metrics
+
+-   `GET /metrics` – Trás dados de métricas relevantes sobre os dados armazenados.
+    
+
+----------
+
 ### Outros
 
 -   Qualquer rota não definida retorna erro 404 com mensagem “Endpoint não encontrado”.
-    
 
 ----------
 
@@ -175,9 +182,13 @@ Você pode criar uma nova conta com poucos cliques na interface ou via API.
 
 -   ✅ Autenticação com JWT
 
- -   ✅ Paginação nas mensagens
+-   ✅ Endpoint de métricas com o total de mensagens, total de conversas, total de usuarios e dados individuais dos usuarios
+
+-   ✅ Paginação nas mensagens
 
 -   ✅ Limitação de apenas um usuário logado com aquele ID por vez
+
+-   ✅ Estruturação do backend também no [POSTMAN](https://fornecedores-team.postman.co/workspace/Maker-Solu%25C3%25A7%25C3%25B5es~58c6e53f-f1d0-4acb-bbca-571c5202bed1/collection/37263758-8b2b7308-0ec4-4ae5-b2f5-fc7bccdc67f0?action=share&source=copy-link&creator=37263758)
 
 
 ## 📬 Contato
