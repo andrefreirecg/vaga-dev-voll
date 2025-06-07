@@ -10,9 +10,6 @@ class ConversationsController < ApplicationController
       return render json: { errors: ['Usuário não encontrado'] }, status: :not_found
     end
 
-    unless authorized_for_conversation?(conversation)
-      return render json: { error: 'Acesso não autorizado' }, status: :unauthorized
-    end
     existing_conversation = Conversation
       .includes(:user_a, :user_b, :messages)
       .find_by(user_a_id: user_a.id, user_b_id: user_b.id) ||

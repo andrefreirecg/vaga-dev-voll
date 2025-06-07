@@ -10,7 +10,8 @@ class MessagesController < ApplicationController
     conversation = Conversation.find_by(id: conversation_id)
 
     unless conversation
-      return render json: { error: 'Conversa não encontrada' }, status: :not_found
+      render json: { error: 'Conversa não encontrada' }, status: :not_found
+      return
     end
 
     message = Message.new(
@@ -21,7 +22,10 @@ class MessagesController < ApplicationController
     )
 
     if message.save
+      user_a_id = conversation.user_a_id
+      user_b_id = conversation.user_b_id
       ActionCable.server.broadcast("conversation_#{conversation.id}", {
+        type: 'message_created',
         message: {
           id: message.id,
           content: message.content,
@@ -31,14 +35,29 @@ class MessagesController < ApplicationController
         }
       })
 
+      [user_a_id, user_b_id].uniq.each do |user_id|
+        ActionCable.server.broadcast("user_#{user_id}", {
+          type: 'message_created',
+          message: {
+            id: message.id,
+            content: message.content,
+            user_id: message.user_id,
+            conversation_id: message.conversation_id,
+            created_at: message.created_at
+          }
+        })
+      end
+
       render json: { message: 'Mensagem criada com sucesso', data: message }, status: :created
     else
       render json: { errors: message.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
-  def get_messages_paginated
-    conversation = Conversation.find_by(id: params[:conversation_id])
+
+
+    def get_messages_paginated
+      conversation = Conversation.find_by(id: params[:conversation_id])
 
     unless conversation
       return render json: { error: 'Conversa não encontrada' }, status: :not_found

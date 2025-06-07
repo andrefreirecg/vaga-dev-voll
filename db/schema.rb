@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_06_162707) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_07_145726) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,6 +42,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_06_162707) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "authentication_token"
+    t.datetime "last_login_at"
+    t.index ["authentication_token"], name: "index_users_on_authentication_token"
   end
 
   add_foreign_key "conversations", "users", column: "user_a_id"
