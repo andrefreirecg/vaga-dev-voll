@@ -12,6 +12,7 @@ class MessagesController < ApplicationController
     unless authorized_for_conversation?(conversation)
       return render json: { error: 'Você não pode criar mensagens aqui' }, status: :unauthorized
     end
+    conversation.update(user_a_deleted: false, user_b_deleted: false)
     unless conversation
       render json: { error: 'Conversa não encontrada' }, status: :not_found
       return
