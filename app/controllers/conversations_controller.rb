@@ -54,7 +54,7 @@ class ConversationsController < ApplicationController
     conversation = Conversation.find_by(id: params[:id].strip)
 
     unless authorized_for_conversation?(conversation)
-      return render json: { error: 'Acesso não autorizado' }, status: :unauthorized
+      return render json: { error: 'Você não pode ver essa conversa' }, status: :unauthorized
     end
 
     if conversation
