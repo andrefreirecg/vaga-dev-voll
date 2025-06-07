@@ -1,57 +1,187 @@
-**Desafio para Desenvolvedor Júnior**
 
-### **Objetivo**
-Desenvolver uma aplicação para troca de mensagens utilizando **Rails** no backend e **Vue.js** no frontend. O propósito deste desafio é avaliar a capacidade do candidato de projetar e implementar um sistema funcional, bem estruturado e seguindo boas práticas de desenvolvimento.
+# 💬 Desafio Voll - Sistema de Troca de Mensagens
 
----
+Projeto desenvolvido como parte do desafio para vaga de Desenvolvedor Júnior na Voll Solutions.
 
-### **Descrição do Projeto**
-O candidato deverá desenvolver um sistema onde usuários podem trocar mensagens entre si. A aplicação deve ser composta por uma API REST no backend e um frontend que interaja com essa API.
+## 🚀 Tecnologias
 
-#### **Requisitos Mínimos**
-##### **Backend (Rails API)**
-- Implementação de um sistema de usuários (cadastro via seed ou criação manual, sem interface gráfica).
-- Endpoint para envio de mensagens entre usuários (`POST /messages`).
-- Endpoint para recuperação de mensagens enviadas e recebidas (`GET /messages/{user_id}`).
-- Restrições de acesso: apenas usuários autenticados podem enviar mensagens e visualizar seu próprio histórico.
-- Utilização de banco de dados relacional (SQLite, PostgreSQL ou equivalente).
+- **Backend:** Ruby on Rails (API Mode) + PostgreSQL + Redis
+- **Frontend:** Vue.js (Vite)
+- **Ambiente:** Docker + Docker Compose
 
-##### **Frontend (Vue.js)**
-- Interface de autenticação simples (input para inserir `user_id`).
-- Exibição das mensagens enviadas e recebidas em uma interface organizada.
-- Campo para composição e envio de novas mensagens.
+## 📦 Como rodar a aplicação (DOCKER / DOCKER COMPOSE)
 
-#### **Diferenciais (Extras Opcionais)**
-Os seguintes itens não são obrigatórios, mas podem agregar valor à solução apresentada:
-- **Comunicação em tempo real via WebSocket** (uso opcional de ActionCable ou outra tecnologia).
-- **Suporte ao envio de arquivos** (permitindo anexos como imagens e documentos pequenos).
-- **Implementação de paginação na listagem de mensagens** para melhor desempenho.
-- **Mecanismo de autenticação** (por exemplo, JWT) para garantir segurança nas requisições.
-- **Criação de um endpoint de métricas** (`/metrics`) com estatísticas sobre mensagens enviadas e usuários ativos.
-- **Processamento assíncrono de mensagens** utilizando fila de tarefas (exemplo: Redis + Sidekiq).
+### Pré-requisitos
 
----
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
 
-### **Instruções para Entrega**
-1. Publicar o código no **GitHub** (ou outra plataforma pública de versionamento).
-2. Incluir um **README** contendo:
-   - Passo a passo para configurar e executar o projeto (backend e frontend).
-   - Tecnologias utilizadas.
-   - Quais diferenciais foram implementados (caso aplicável).
-3. Enviar o link do repositório junto com o currículo para o email: rh@vollsolutions.com.br.
+### 🔧 Passo a passo
 
-**Observação:** A publicação online da aplicação não é necessária, apenas a disponibilização do código-fonte em repositório público.
+1. Clone o repositório:
 
----
+```
+git clone https://github.com/andrefreirecg/vaga-dev-voll.git
+```
 
-### **Critérios de Avaliação**
-- Organização, clareza e legibilidade do código.
-- Implementação correta dos requisitos básicos.
-- Aplicação de boas práticas de desenvolvimento (estrutura modular, separação de responsabilidades, etc.).
-- Qualidade da documentação no README.
-- Implementação de diferenciais (caso tenha sido realizada).
+2. Acesse a pasta do projeto:
 
----
+```
+cd vaga-dev-voll
+```
 
-**Bom desafio e sucesso!**
+3. Execute o projeto
 
+```
+docker compose up -d --build
+```
+
+## 📦 Como rodar a aplicação (Manualmente)
+
+### Pré-requisitos
+
+- [Ruby V.3.2.3](https://www.ruby-lang.org/en/news/2024/01/18/ruby-3-2-3-released/)
+- [Rails V.8.0.2](https://rubyonrails.org/2025/3/12/Rails-Version-8-0-2-has-been-released)
+- [Node V.20.19.2](https://nodejs.org/pt/blog/release/v20.19.2) + YARN
+- [Redis V.6.2.18](https://redis.io/docs/latest/operate/rs/release-notes/rs-6-2-18-releases/)
+- [PostgreSQL V.14.18](https://www.postgresql.org/docs/release/14.18/)
+
+### 🔧 Passo a passo
+
+1. Clone o repositório:
+
+```
+git clone https://github.com/andrefreirecg/vaga-dev-voll.git
+```
+
+2. Copie e **CONFIGURE** os envs:
+
+```
+cp backend/.env.sample backend/.env
+cp frontend/.env.sample frontend/.env
+```
+
+3. Instale as dependencias do backend
+
+```
+bundle install
+```
+
+4. Execute as migrations do backend
+```
+rails db:migrate
+```
+
+4. Execute o backend ***O processo ocupa o terminal***
+```
+rails s
+```
+
+5. Acesse o frontend e instale as dependencias
+```
+cd ../frontend
+yarn install
+
+```
+6. Execute o frontend 
+```
+yarn dev
+```
+
+
+### ✅ Acesse
+
+-   Frontend: [http://localhost:5173](http://localhost:5173)
+    
+-   Backend: [http://localhost:3000](http://localhost:3000)
+
+## 🔐 Autenticação
+
+No frontend, informe apenas seu `user_id` (usuário gerado por seed ou API).
+Você pode criar uma nova conta com poucos cliques na interface ou via API.
+
+
+## 📫 Endpoints disponíveis
+
+### Autenticação
+
+-   `POST /login` – Realiza login do usuário.
+    
+-   `GET /me` – Retorna dados do usuário autenticado.
+    
+-   `POST /logout` – Realiza logout do usuário.
+    
+
+----------
+
+### Usuários
+
+-   `POST /users` – Cria um novo usuário.
+    
+-   `GET /users/:id` – Retorna dados do usuário pelo ID.
+    
+-   `DELETE /users/:id` – Deleta usuário pelo ID.
+    
+-   `GET /users/all` – Lista todos os usuários.
+    
+
+----------
+
+### Conversas
+
+-   `POST /conversations` – Cria uma nova conversa.
+    
+-   `GET /conversations/:id` – Mostra os detalhes de uma conversa pelo ID.
+    
+-   `DELETE /conversations/:id` – Deleta uma conversa pelo ID.
+    
+-   `GET /conversations/user/:id` – Lista todas as conversas do usuário pelo ID.
+    
+
+----------
+
+### Mensagens
+
+-   `POST /messages` – Envia uma nova mensagem.
+    
+-   `GET /messages/conversation/:conversation_id` – Lista mensagens paginadas de uma conversa.
+    
+-   `DELETE /messages/:id` – Deleta uma mensagem pelo ID.
+    
+
+----------
+
+### Outros
+
+-   Qualquer rota não definida retorna erro 404 com mensagem “Endpoint não encontrado”.
+    
+
+----------
+
+**Nota:** Todos os endpoints requerem autenticação (via header ou frontend).
+
+
+## ✅ Diferenciais Implementados
+
+-   ✅ Comunicação em tempo real com WebSockets (ActionCable)
+    
+-   ✅ Redis para processamento assíncrono
+    
+-   ✅ Autenticação simplificada via user_id ou name
+    
+-   ✅ Docker + Docker Compose para ambiente unificado
+    
+-   ✅ `.env.sample` para facilitar configuração manual
+
+-   ✅ Autenticação com JWT
+
+ -   ✅ Paginação nas mensagens
+
+-   ✅ Limitação de apenas um usuário logado com aquele ID por vez
+
+
+## 📬 Contato
+
+Desenvolvido por **André Barciela Freire**  
+- [📧 andrefreirecg@gmail.com](mailto:andrefreirecg@gmail.com)
+- [📱💬 11 9 1446-4496](https://wa.me/+5511914464496)
