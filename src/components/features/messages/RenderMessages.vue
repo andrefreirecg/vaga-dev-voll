@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-[100dvh]">
+  <div class="flex flex-col h-[100dvh]" v-if="conversation_id">
     <div class="text-center uppercase p-2 shrink-0">
       <h2 class="text-lg font-bold text-gray-400 mb-2">
         {{
@@ -16,25 +16,29 @@
       <div v-if="store_messages.hasMoreMessages" ref="loadTrigger" class="h-4" />
       <div>
         <div v-for="message in current_messages" :key="message.id">
-          <OwnMessage :message="message" v-if="store_user.id == message.user_id"/>
+          <OwnMessage :message="message" v-if="store_user.id == message.user_id" />
           <ContactMessage :message="message" v-else />
         </div>
       </div>
       <div ref="endOfMessages" />
     </div>
     <div class="border-t mt-2 pb-3 px-2 ">
-      <NewMessage :conversation_id="id_conversation" />
+      <NewMessage :conversation_id="conversation_id" />
     </div>
+  </div>
+  <div v-else class="flex items-center gap-3">
+     <MessageBulletedOff />
+    <p class="text-lg uppercase font-bold">Selecione uma conversa</p>
   </div>
 </template>
 
 
 
 <script setup>
+import MessageBulletedOff from 'vue-material-design-icons/MessageBulletedOff.vue';
 import { ref, computed, nextTick, onMounted, onBeforeUnmount, defineProps, watch } from 'vue';
 import { messagesStore } from '@/stores/messages';
 import { userStore } from '@/stores/user';
-import { useRoute } from 'vue-router';
 import cable from '@/utils/cable'
 import OwnMessage from './OwnMessage.vue';
 import ContactMessage from './ContactMessage.vue';
@@ -42,19 +46,20 @@ import NewMessage from './NewMessage.vue';
 import { toast } from 'vue3-toastify';
 const store_messages = messagesStore();
 const store_user = userStore();
-const props = defineProps({ conversation_id: { type: String, required: true } })
+const props = defineProps({ conversation_id: { type: String, required: false } })
 
-const id_conversation = useRoute().params.id
-const current_conversation = computed(() => store_messages.conversations.find((conversation) => conversation.id === id_conversation));
+const current_conversation = computed(() => store_messages.conversations.find((conversation) => conversation.id === props.conversation_id));
 const endOfMessages = ref(null)
-let subscription = null
 const current_messages = computed(() =>
-  [...store_messages.messages].sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+  store_messages.messages
+    .filter((message) => message.conversation_id === props.conversation_id)
+    .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
 );
 
 const loadTrigger = ref(null);
 const scroll_container = ref(null);
 let observer;
+let userSubscription = null;
 
 watch(current_messages, async () => {
   await nextTick()
@@ -64,15 +69,10 @@ watch(current_messages, async () => {
 })
 
 watch(() => props.conversation_id, async (newId) => {
-  // Remove observer e subscription antigos
   if (observer && loadTrigger.value) {
     observer.unobserve(loadTrigger.value);
   }
-  if (subscription) {
-    cable.subscriptions.remove(subscription);
-  }
 
-  // Reset mensagens e recarrega
   await store_messages.get_messages(newId);
 
   await nextTick();
@@ -80,33 +80,9 @@ watch(() => props.conversation_id, async (newId) => {
     endOfMessages.value.scrollIntoView({ behavior: 'auto' });
   }
 
-  // Recria observer e subscription
   if (loadTrigger.value) {
     observer.observe(loadTrigger.value);
   }
-
-  subscription = cable.subscriptions.create(
-    {
-      channel: 'ConversationChannel',
-      conversation_id: newId,
-    },
-    {
-      received(data) {
-        store_messages.addMessage(data.message);
-        nextTick(() => {
-          if (endOfMessages.value) {
-            endOfMessages.value.scrollIntoView({ behavior: 'smooth' });
-          }
-        });
-      },
-      connected() {
-        toast.success('Conectado ao servidor');
-      },
-      disconnected() {
-        toast.error('Desconectado do servidor');
-      }
-    }
-  );
 });
 
 
@@ -145,27 +121,20 @@ onMounted(async () => {
     threshold: 1.0,
   });
 
-
-
   if (loadTrigger.value) {
     observer.observe(loadTrigger.value);
   }
 
-  subscription = cable.subscriptions.create(
+
+  userSubscription = cable.subscriptions.create(
+  { channel: 'UserChannel', user_id: store_user.id },
     {
-      channel: 'ConversationChannel',
-      conversation_id: props.conversation_id,
-    },
-    {
-      async received(data) {
-        store_messages.addMessage(data.message)
-        await nextTick()
-        if (endOfMessages.value) {
-          endOfMessages.value.scrollIntoView({ behavior: 'smooth' })
-        }
+      received(data) {
+        store_messages.addMessage(data.message);
+        console.log('Recebido no canal de usuário:', data);
       },
       connected() {
-        toast('Conectado ao servidor', {
+        toast('Conectado, você receberá novas mensagens automaticamente', {
           position: toast.POSITION.BOTTOM_RIGHT,
           type: 'success',
           autoClose: true,
@@ -174,25 +143,27 @@ onMounted(async () => {
         })
       },
       disconnected() {
-        toast('Desconectado do servidor', {
+        toast('Desconectado do canal do usuário, você não receberá mais mensagens sem atualização da página', {
           position: toast.POSITION.BOTTOM_RIGHT,
-          type: 'error',
+          type: 'warning',
           autoClose: true,
           closeOnClick: true,
           closeButton: true
         })
-      },
+      }
     }
-  )
-})
+  );
 
+})
 
 onBeforeUnmount(() => {
   if (observer && loadTrigger.value) {
     observer.unobserve(loadTrigger.value);
   }
-  if (subscription) {
-    cable.subscriptions.remove(subscription)
+
+  if (userSubscription) {
+    cable.subscriptions.remove(userSubscription);
   }
 });
+
 </script>

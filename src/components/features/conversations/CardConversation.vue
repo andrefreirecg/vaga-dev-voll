@@ -35,7 +35,7 @@ const props = defineProps({
 });
 const current = computed(() => props.conversation)
 
-function truncateText(text, length = 25) {
+function truncateText(text, length = 20) {
   return text.length > length ? text.slice(0, length) + '...' : text;
 }
 

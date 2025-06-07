@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import PrincipalHeader from '@/components/layout/PrincipalHeader.vue';
 import ContextConversations from '@/components/features/conversations/ContextConversations.vue';
-import MessageBulletedOff from 'vue-material-design-icons/MessageBulletedOff.vue';
+import RenderMessages from '@/components/features/messages/RenderMessages.vue';
 
 </script>
 
@@ -16,8 +16,7 @@ import MessageBulletedOff from 'vue-material-design-icons/MessageBulletedOff.vue
           <ContextConversations />
         </div>
         <div class="col-span-4 overflow-y-auto flex items-center justify-center gap-3">
-          <MessageBulletedOff />
-          <p class="text-sm font-bold">Nada por aqui...</p>
+          <RenderMessages />
         </div>
       </div>
     </main>
