@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col" v-if="current">
     <div class="flex items-center justify-between p-1 cursor-pointer hover:text-black hover:bg-gray-100 ">
-      <div class="flex items-center p-1 gap-2 w-full justify-around">
+      <div class="flex items-center p-1 gap-2 w-full justify-between px-2">
         <div class="w-8 h-8 bg-gray-500 rounded-full flex justify-center items-center">
           {{ current.name.charAt(0) }}
         </div>
@@ -9,7 +9,7 @@
           <p class="text-sm text-right font-bold">{{ current.name }}</p>
           <p class="text-xs text-gray-600 flex items-center justify-between" v-if="current.last_message">
             {{ `${(current.last_message.user_id == store_user.id ? 'Você' : current.name)}:
-            ${(current.last_message.content ? current.last_message.content : 'Arquivo')}` }}
+            ${(current.last_message.content ? truncateText(current.last_message.content)  : 'Arquivo')}` }}
           </p>
           <p v-else>
             Nenhuma mensagem
@@ -34,4 +34,10 @@ const props = defineProps({
   conversation: Object
 });
 const current = computed(() => props.conversation)
+
+function truncateText(text, length = 25) {
+  return text.length > length ? text.slice(0, length) + '...' : text;
+}
+
+
 </script>

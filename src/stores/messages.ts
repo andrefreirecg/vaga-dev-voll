@@ -5,19 +5,36 @@ export const messagesStore = defineStore('messages', {
   state: () => {
     return {
       conversations: [],
-      messages: []
+      messages: [],
+      currentPage: 0,
+      perPage: 10,
+      hasMoreMessages: true,
+      loadingMessages: false
     };
   },
   actions: {
-    addConversation (conversation: any) {
+    addConversation(conversation: any) {
       if (!this.conversations.find((c: any) => c.id === conversation.id)) {
         this.conversations.push(conversation);
       }
     },
-    removeConversation (id_conversation: string) {
+    removeConversation(id_conversation: string) {
       this.conversations = this.conversations.filter((c: any) => c.id !== id_conversation);
     },
-    clear_all(){
+    addMessage(message: any) {
+      if (!this.messages.find((m: any) => m.id === message.id)) {
+        this.messages.push(message);
+      }
+      const conversation = this.conversations.find((c: any) => c.id === message.conversation_id);
+      if (conversation) {
+        conversation.messages[0] = message;
+      }
+    },
+    reset_pagination() {
+      this.currentPage = 0;
+      this.hasMoreMessages = true;
+    },
+    clear_all() {
       this.conversations = [];
       this.messages = [];
     },
@@ -115,6 +132,90 @@ export const messagesStore = defineStore('messages', {
           status: false,
           message: 'Erro ao carregar'
         }
+      }
+    },
+    async send_message(body: any) {
+      try {
+        const body_string = JSON.stringify(body);
+        const response = await fetch(`${url}messages`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: body_string
+        });
+        const data = await response.json()
+        if (response.ok) {
+          this.addMessage(data.data);
+          return {
+            status: true,
+            message: 'Mensagem enviada'
+          }
+        } else {
+          if (data?.data) {
+            this.addMessage(data.data);
+          }
+          return {
+            status: false,
+            message: data.errors[0]
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao enviar mensagem ao store: ', error)
+        return {
+          status: false,
+          message: 'Erro desconhecido ao enviar mensagem'
+        }
+      }
+    },
+    async get_messages(id_conversation: string) {
+      this.currentPage = 1;
+      this.hasMoreMessages = true;
+      this.messages = []; // zera mensagens antes de carregar
+      return await this.load_more_messages(id_conversation);
+    },
+
+    async load_more_messages(id_conversation: string) {
+      if (!this.hasMoreMessages || this.loadingMessages) return;
+
+      this.loadingMessages = true;
+
+      try {
+        const response = await fetch(`${url}messages/conversation/${id_conversation}?page=${this.currentPage}&per_page=${this.perPage}`, {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          if (data.messages.length < this.perPage) {
+            this.hasMoreMessages = false;
+          }
+
+          this.messages = [...data.messages, ...this.messages];
+          this.currentPage += 1;
+
+          return {
+            status: true,
+            message: 'Mais mensagens carregadas com sucesso',
+            messages: this.messages
+          }
+        } else {
+          return {
+            status: false,
+            message: data.error
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao carregar mais mensagens: ', error)
+        return {
+          status: false,
+          message: 'Erro ao carregar mais mensagens'
+        }
+      } finally {
+        this.loadingMessages = false;
       }
     }
   },
