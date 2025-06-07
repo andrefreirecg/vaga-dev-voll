@@ -10,12 +10,17 @@ class ConversationsController < ApplicationController
       return render json: { errors: ['Usuário não encontrado'] }, status: :not_found
     end
 
+    unless authorized_for_conversation?(conversation)
+      return render json: { error: 'Acesso não autorizado' }, status: :unauthorized
+    end
     existing_conversation = Conversation
       .includes(:user_a, :user_b, :messages)
       .find_by(user_a_id: user_a.id, user_b_id: user_b.id) ||
       Conversation
       .includes(:user_a, :user_b, :messages)
       .find_by(user_a_id: user_b.id, user_b_id: user_a.id)
+
+
 
     if existing_conversation
       if existing_conversation.user_a_deleted || existing_conversation.user_b_deleted
@@ -37,7 +42,9 @@ class ConversationsController < ApplicationController
 
   def destroy
     conversation = Conversation.find_by(id: params[:id].strip)
-
+    unless authorized_for_conversation?(conversation)
+      return render json: { error: 'Acesso não autorizado' }, status: :unauthorized
+    end
     if conversation
       conversation.destroy
       render json: { message: 'Conversa deletada com sucesso' }, status: :ok
@@ -48,6 +55,10 @@ class ConversationsController < ApplicationController
 
   def show
     conversation = Conversation.find_by(id: params[:id].strip)
+
+    unless authorized_for_conversation?(conversation)
+      return render json: { error: 'Acesso não autorizado' }, status: :unauthorized
+    end
 
     if conversation
       render json: { conversation: conversation }, status: :ok
@@ -96,6 +107,9 @@ class ConversationsController < ApplicationController
     }
   end
 
+  def authorized_for_conversation?(conversation)
+    [conversation.user_a_id, conversation.user_b_id].include?(@current_user.id)
+  end
 
   def conversation_params
     params.permit(:user_a_id, :user_b_id)

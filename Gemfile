@@ -65,3 +65,5 @@ end
 gem 'dotenv-rails', groups: [:development, :test, :production]
 gem 'jwt'
 gem 'rack-cors'
+
+gem 'redis'

@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
           render json: { error: 'User not found' }, status: :unauthorized
           return
         end
+        return @current_user
       rescue JWT::DecodeError
         render json: { error: 'Invalid token', log: token }, status: :unauthorized
         return

@@ -21,5 +21,6 @@ Rails.application.routes.draw do
 
   # Messages
   post '/messages', to: 'messages#create'
+  get 'messages/conversation/:conversation_id', to: 'messages#get_messages_paginated'
 
 end
