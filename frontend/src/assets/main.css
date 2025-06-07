@@ -1,0 +1,7 @@
+@import './font.css';
+@import "tailwindcss";
+
+@import './reset.css';
+@import './base.css';
+@import 'vue3-toastify/dist/index.css';
+

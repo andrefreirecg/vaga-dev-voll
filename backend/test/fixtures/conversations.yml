@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_a: one
+  user_b: one
+  messages_count: 1
+  uuid: 
+
+two:
+  user_a: two
+  user_b: two
+  messages_count: 1
+  uuid: 
