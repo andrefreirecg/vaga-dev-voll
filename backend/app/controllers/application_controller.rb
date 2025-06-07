@@ -1,7 +1,9 @@
 class ApplicationController < ActionController::Base
   allow_browser versions: :modern
   JWT_SECRET = ENV['JWT_SECRET'] || 'secret'
-
+  def route_not_found
+    render json: { error: 'Rota não encontrada' }, status: :not_found
+  end
   def authenticate_user
     token = cookies.signed[:auth]
 

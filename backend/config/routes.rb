@@ -24,4 +24,6 @@ Rails.application.routes.draw do
   get 'messages/conversation/:conversation_id', to: 'messages#get_messages_paginated'
   delete '/messages/:id', to: 'messages#delete'
 
+  match '*unmatched', to: 'application#route_not_found', via: :all
+
 end
