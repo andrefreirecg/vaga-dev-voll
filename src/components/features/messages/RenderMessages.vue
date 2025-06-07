@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-[100dvh]" v-if="conversation_id">
+  <div class="flex flex-col h-[100dvh]" v-if="conversation_id && current_conversation">
     <div class="text-center uppercase p-2 shrink-0">
       <h2 class="text-lg font-bold text-gray-400 mb-2">
         {{
@@ -26,10 +26,11 @@
       <NewMessage :conversation_id="conversation_id" />
     </div>
   </div>
-  <div v-else class="flex items-center gap-3">
-     <MessageBulletedOff />
+  <div v-else class="flex items-center justify-center h-full gap-3">
+    <MessageBulletedOff />
     <p class="text-lg uppercase font-bold">Selecione uma conversa</p>
   </div>
+  <p class="self-end" v-if="conversation_id && !current_conversation">Espertinho! Nada pra você aqui</p>
 </template>
 
 
@@ -130,7 +131,17 @@ onMounted(async () => {
   { channel: 'UserChannel', user_id: store_user.id },
     {
       received(data) {
-        store_messages.addMessage(data.message);
+        switch (data.type) {
+          case "message_deleted":
+            store_messages.removeMessage(data.message.id);
+            break;
+          case "update_message":
+            store_messages.removeMessage(data.message);
+            break;
+          default:
+            store_messages.addMessage(data.message);
+            break;
+        }
         console.log('Recebido no canal de usuário:', data);
       },
       connected() {

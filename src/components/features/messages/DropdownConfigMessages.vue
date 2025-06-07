@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center gap-2 opacity-10 hover:opacity-100">
-    <UpdateMessage :message="message" />
-    <DeleteMessage :message="message" />
+    <UpdateMessage :message_id="message.id" />
+    <DeleteMessage :message_id="message.id" />
   </div>
 </template>
 

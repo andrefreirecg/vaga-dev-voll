@@ -1,13 +1,41 @@
 <template>
   <div>
-    <button type="button"
-      class="inline-flex w-full justify-center rounded-full text-gray-300 hover:text-gray-800 p-1 text-sm shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50">
-      <TrashCan />
-    </button>
+    <form @submit="onSubmit">
+      <button type="submit"
+        class="inline-flex w-full justify-center rounded-full text-gray-300 hover:text-gray-800 p-1 text-sm shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50">
+        <TrashCan />
+      </button>
+    </form>
   </div>
 </template>
 
 <script setup>
 import TrashCan from 'vue-material-design-icons/TrashCan.vue';
+import { messagesStore } from '@/stores/messages';
+const store_messages = messagesStore();
+import { defineProps } from 'vue';
+import { toast } from 'vue3-toastify';
+const props = defineProps({ message_id: { type: String, required: true } });
 
+function onSubmit(e) {
+  e.preventDefault();
+  const deleted = store_messages.delete_message(props.message_id);
+  if (!deleted.status) {
+    toast(deleted.message, {
+      position: toast.POSITION.BOTTOM_RIGHT,
+      type: 'error',
+      autoClose: true,
+      closeOnClick: true,
+      closeButton: true
+    });
+    return
+  }
+  toast('Mensagem excluida com sucesso', {
+    position: toast.POSITION.BOTTOM_RIGHT,
+    type: 'success',
+    autoClose: true,
+    closeOnClick: true,
+    closeButton: true
+  });
+}
 </script>

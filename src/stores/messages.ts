@@ -30,6 +30,15 @@ export const messagesStore = defineStore('messages', {
         conversation.messages[0] = message;
       }
     },
+    removeMessage(id_message: string) {
+      this.messages = this.messages.filter((m: any) => m.id !== id_message);
+    },
+    updateMessage(message: any) {
+      const index = this.messages.findIndex((m: any) => m.id === message.id);
+      if (index !== -1) {
+        this.messages[index] = message;
+      }
+    },
     reset_pagination() {
       this.currentPage = 0;
       this.hasMoreMessages = true;
@@ -217,6 +226,24 @@ export const messagesStore = defineStore('messages', {
       } finally {
         this.loadingMessages = false;
       }
+    },
+    async delete_message(id_message: string) {
+      try {
+        await fetch(`${url}messages/${id_message}`, {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        this.removeMessage(id_message);
+        return {
+          status: true,
+          message: 'Mensagem deletada'
+        }
+      } catch (error) {
+        console.error('Erro ao deletar mensagem: ', error)
     }
-  },
+    }
+  }
 });
