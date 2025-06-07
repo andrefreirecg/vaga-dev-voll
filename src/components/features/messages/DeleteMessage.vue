@@ -17,11 +17,11 @@ import { defineProps } from 'vue';
 import { toast } from 'vue3-toastify';
 const props = defineProps({ message_id: { type: String, required: true } });
 
-function onSubmit(e) {
+async function onSubmit(e) {
   e.preventDefault();
-  const deleted = store_messages.delete_message(props.message_id);
+  const deleted = await store_messages.delete_message(props.message_id);
   if (!deleted.status) {
-    toast(deleted.message, {
+    toast('Erro ao deletar mensagem, tente novamente mais tarde', {
       position: toast.POSITION.BOTTOM_RIGHT,
       type: 'error',
       autoClose: true,

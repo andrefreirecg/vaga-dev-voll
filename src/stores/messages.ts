@@ -21,12 +21,15 @@ export const messagesStore = defineStore('messages', {
     removeConversation(id_conversation: string) {
       this.conversations = this.conversations.filter((c: any) => c.id !== id_conversation);
     },
-    addMessage(message: any) {
-      if (!this.messages.find((m: any) => m.id === message.id)) {
+    async addMessage(message: string) {
+      if (!this.messages.find(m => m.id === message.id)) {
         this.messages.push(message);
       }
-      const conversation = this.conversations.find((c: any) => c.id === message.conversation_id);
+
+      await this.get_conversations(message.user_id);
+      const conversation = this.conversations.find(c => c.id === message.conversation_id);
       if (conversation) {
+        // Atualiza o último message na conversa
         conversation.messages[0] = message;
       }
     },
@@ -82,17 +85,12 @@ export const messagesStore = defineStore('messages', {
         }
       }
     },
-    async delete_conversation(id_conversation: string, id_user: string) {
+    async delete_conversation(id_conversation: string) {
       try {
-        const body = {
-          id_conversation: id_conversation,
-          id_user: id_user
-        }
-        const body_string = JSON.stringify(body);
-        await fetch(`${url}conversations`, {
+
+        await fetch(`${url}conversations/${id_conversation}`, {
           method: 'DELETE',
           credentials: 'include',
-          body: body_string,
           headers: {
             'Content-Type': 'application/json',
           }
@@ -184,7 +182,6 @@ export const messagesStore = defineStore('messages', {
       this.messages = []; // zera mensagens antes de carregar
       return await this.load_more_messages(id_conversation);
     },
-
     async load_more_messages(id_conversation: string) {
       if (!this.hasMoreMessages || this.loadingMessages) return;
 
@@ -243,7 +240,11 @@ export const messagesStore = defineStore('messages', {
         }
       } catch (error) {
         console.error('Erro ao deletar mensagem: ', error)
-    }
+        return {
+          status: false,
+          message: 'Erro ao deletar'
+        }
+      }
     }
   }
 });

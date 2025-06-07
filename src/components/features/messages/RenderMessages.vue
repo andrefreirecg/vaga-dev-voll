@@ -1,13 +1,17 @@
 <template>
   <div class="flex flex-col h-[100dvh]" v-if="conversation_id && current_conversation">
-    <div class="text-center uppercase p-2 shrink-0">
-      <h2 class="text-lg font-bold text-gray-400 mb-2">
-        {{
-          store_user.id === current_conversation.user_a.id
-            ? current_conversation.user_b.name
-            : current_conversation.user_a.name
-        }}
-      </h2>
+    <div class="flex justify-between uppercase p-2 shrink-0">
+      <div>
+        <h2 class="text-lg font-bold text-gray-400 mb-2">
+          {{
+            store_user.id === current_conversation.user_a.id
+              ? current_conversation.user_b.name
+              : current_conversation.user_a.name
+          }}
+        </h2>
+        <small>Conversa iniciada em: {{ date_to_ptbr(current_conversation.created_at) }}</small>
+      </div>
+      <DeleteConversation :conversation_id="current_conversation.id" />
     </div>
     <div ref="scroll_container" class="flex-1 overflow-y-auto px-2">
       <div v-if="!store_messages.hasMoreMessages" class="text-center text-gray-500 mb-1">
@@ -37,6 +41,8 @@
 
 <script setup>
 import MessageBulletedOff from 'vue-material-design-icons/MessageBulletedOff.vue';
+import DeleteConversation from '@/components/features/conversations/DeleteConversation.vue';
+import { date_to_ptbr } from '@/utils/date';
 import { ref, computed, nextTick, onMounted, onBeforeUnmount, defineProps, watch } from 'vue';
 import { messagesStore } from '@/stores/messages';
 import { userStore } from '@/stores/user';
@@ -125,7 +131,6 @@ onMounted(async () => {
   if (loadTrigger.value) {
     observer.observe(loadTrigger.value);
   }
-
 
   userSubscription = cable.subscriptions.create(
   { channel: 'UserChannel', user_id: store_user.id },
